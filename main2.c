@@ -67,7 +67,7 @@ int main() {
     UINT16 FOV = 90;
     UINT16 WIDTH = 1000;
     UINT16 HEIGHT = 1000;
-    double cameraDistance = 400.0;
+    double cameraDistance = 500.0;
 
     HDC screen = GetDC(NULL);
     HDC memDC = CreateCompatibleDC(screen);
@@ -103,6 +103,7 @@ int main() {
         DeleteObject(bgBrush);
 
         double currentTime = (double)clock() / 50;
+        currentTime = 0;
         double angle = 2 * 2 * currentTime / 180.0 * M_PI;
 
         HPEN rainbowPen = CreatePen(PS_SOLID, 2, GetRainbowColor(currentTime));
@@ -116,11 +117,28 @@ int main() {
             rotatedVerts[i] = rotateZ(rotatedVerts[i], angle);
         }
 
-        scale(rotatedVerts, vertexCount, 150 + 50 * cos(0.25 * currentTime));
+        scale(rotatedVerts, vertexCount, 150 + 25 * cos(0.25 * currentTime));
 
         SelectObject(memDC, rainbowPen);
 
         POINT points[4];
+        for (int i = 0; i < indices; i++) {
+            for (int j = 0; j < 4; j++) {
+                Point3D v = rotatedVerts[polygons[i][j]];
+                points[j].x = WIDTH / 2 + (FOV * v.x) / (v.z + cameraDistance);
+                points[j].y = HEIGHT / 2 + (FOV * v.y) / (v.z + cameraDistance);
+            }
+            Polyline(memDC, points, 4);
+        }
+
+        for (int i = 0; i < vertexCount; i++) {
+            rotatedVerts[i] = rotateX(vertices[i], angle);
+            rotatedVerts[i] = rotateY(rotatedVerts[i], angle);
+            rotatedVerts[i] = rotateZ(rotatedVerts[i], angle);
+        }
+
+        scale(rotatedVerts, vertexCount, 150 - 50 * cos(0.25 * currentTime));
+
         for (int i = 0; i < indices; i++) {
             for (int j = 0; j < 4; j++) {
                 Point3D v = rotatedVerts[polygons[i][j]];
