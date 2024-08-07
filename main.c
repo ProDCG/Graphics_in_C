@@ -51,7 +51,7 @@ int main() {
     HBITMAP memBitmap = CreateCompatibleBitmap(screen, WIDTH, HEIGHT);
     SelectObject(memDC, memBitmap);
 
-    Point3D plane[3] = { {-50, 0, 200}, {0, 100, 200}, {50, 0, 200} };
+    Point3D plane[3] = { {-50, 500, 200}, {0, 100, 200}, {50, 0, 200} };
     POINT points[3];
 
     UINT8 vertices = sizeof(plane) / sizeof(plane[0]);
