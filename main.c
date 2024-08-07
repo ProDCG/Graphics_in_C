@@ -26,58 +26,59 @@ COLORREF GetRainbowColor(double time) {
 }
 
 int main() {
-    HDC screen = GetDC(NULL);
-
-    Point3D plane[4] = { {0, 0, 0}, {100, 0, 0}, {100, 100, 0}, {0, 100, 0} };
-    POINT points[4];
-
     UINT16 FOV = 60;
     UINT16 WIDTH = 500;
     UINT16 HEIGHT = 500;
+    UINT8 vertices = 3;
+
+    HDC screen = GetDC(NULL);
+    HDC memDC = CreateCompatibleDC(screen);
+    HBITMAP memBitmap = CreateCompatibleBitmap(screen, WIDTH, HEIGHT);
+    SelectObject(memDC, memBitmap);
+
+    Point3D plane[3] = { {0, 0, 0}, {100, 100, 10}, {100, 0, 0}};
+    POINT points[3];
 
     for(;;) {
+        HBRUSH bgBrush = CreateSolidBrush(RGB(255, 255, 255));
+        FillRect(memDC, &(RECT){0, 0, WIDTH, HEIGHT}, bgBrush);
+        DeleteObject(bgBrush);
+
         double currentTime = (double)clock() / 50;
-
         COLORREF color = GetRainbowColor(currentTime);
-
         HBRUSH brush = CreateSolidBrush(color);
-        HBRUSH black = CreateSolidBrush(RGB(0, 0, 0));
+        // HBRUSH black = CreateSolidBrush(RGB(0, 0, 0));
+        // HBRUSH white = CreateSolidBrush(RGB(255, 255, 255));
 
-        SelectObject(screen, RGB(255, 255, 255));
+        // SelectObject(memDC, black);
 
-        for (int i = 0; i < 4; i++) {
+        // rotation
+        // double angle = 0.01;
+        // for (int i = 0; i < 3; i++) {
+        //     plane[i] = rotateX(plane[i], 0);
+        // }
+        // angle += 0.01;
+
+        // projection
+        for (int i = 0; i < 3; i++) {
             points[i].x = WIDTH / 2 + (FOV * plane[i].x) / (plane[i].z + FOV);
             points[i].y = HEIGHT / 2 + (FOV * plane[i].y) / (plane[i].z + FOV);
         }
 
-        Rectangle(screen, 0, 0, WIDTH, HEIGHT);
+        // Rectangle(screen, 0, 0, WIDTH, HEIGHT);
+        FillRgn(memDC, CreatePolygonRgn(points, 3, WINDING), brush);
 
-        // SelectObject(screen, RGB(0, 0, 0));
-        // Polygon(screen, (POINT[]){ {50, 50}, {500, 50}, {500, 500}, {50, 500} }, 4);
-        // Polygon(screen, points, 4);
+        BitBlt(screen, 0, 0, WIDTH, HEIGHT, memDC, 0, 0, SRCCOPY);
 
-        // Write a polygn using the points array, and then fill it with black
-        // CreatePolygonRgn(points, 4, WINDING);
-        FillRgn(screen, CreatePolygonRgn(points, 4, WINDING), black);
-
-        
-
-
-
-        // Polygon(screen, points, 4);
-
-        // double degrees = 0.01;
-        // for (int i = 0; i < 4; i++) {
-        //     plane[i] = rotateX(plane[i], degrees);
-        // }
-        // degrees += 0.01;
-
-        DeleteObject(brush);
+        // DeleteObject(brush);
+        // DeleteObject(black);
 
         Sleep(20);
     }
 
-    ReleaseDC(NULL, screen);    
+    DeleteObject(memBitmap);
+    DeleteDC(memDC);
+    ReleaseDC(NULL, screen);
 
     return 0;
 }
