@@ -65,9 +65,9 @@ COLORREF GetRainbowColor(double time) {
 
 int main() {
     UINT16 FOV = 90;
-    UINT16 WIDTH = 500;
-    UINT16 HEIGHT = 500;
-    double cameraDistance = 200.0;
+    UINT16 WIDTH = 1000;
+    UINT16 HEIGHT = 1000;
+    double cameraDistance = 400.0;
 
     HDC screen = GetDC(NULL);
     HDC memDC = CreateCompatibleDC(screen);
@@ -103,9 +103,9 @@ int main() {
         DeleteObject(bgBrush);
 
         double currentTime = (double)clock() / 50;
-        double angle = 2 * currentTime / 180.0 * M_PI;
+        double angle = 2 * 2 * currentTime / 180.0 * M_PI;
 
-        HPEN rainbowPen = CreatePen(PS_SOLID, 1, GetRainbowColor(currentTime));
+        HPEN rainbowPen = CreatePen(PS_SOLID, 2, GetRainbowColor(currentTime));
         HPEN blackPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
 
         Point3D rotatedVerts[8];
@@ -116,8 +116,7 @@ int main() {
             rotatedVerts[i] = rotateZ(rotatedVerts[i], angle);
         }
 
-        scale(rotatedVerts, vertexCount, 50 + 25 * cos(0.5 * currentTime));
-
+        scale(rotatedVerts, vertexCount, 150 + 50 * cos(0.25 * currentTime));
 
         SelectObject(memDC, rainbowPen);
 
