@@ -133,63 +133,63 @@ int main() {
 
         SelectObject(memDC, rainbowPen);
 
-        Point3D rotatedVerts[12];
-        memcpy(rotatedVerts, ico_verts, sizeof(ico_verts));
-        for (int i = 0; i < ico_vert_count; i++) {
-            rotatedVerts[i] = rotateX(ico_verts[i], angle);
+        // Point3D rotatedVerts[12];
+        // memcpy(rotatedVerts, ico_verts, sizeof(ico_verts));
+        // for (int i = 0; i < ico_vert_count; i++) {
+        //     rotatedVerts[i] = rotateX(ico_verts[i], angle);
+        //     rotatedVerts[i] = rotateY(rotatedVerts[i], angle);
+        //     rotatedVerts[i] = rotateZ(rotatedVerts[i], angle);
+        // }
+
+        // scale(rotatedVerts, 12, 250);
+
+        // POINT points[3];
+        // for (int i = 0; i < 20; i++) {
+        //     for (int j = 0; j < 3; j++) {
+        //         Point3D v = rotatedVerts[ico_faces[i][j]];
+        //         points[j].x = WIDTH / 2 + (FOV * v.x) / (v.z + cameraDistance);
+        //         points[j].y = WIDTH / 2 + (FOV * v.y)  / (v.z + cameraDistance);
+        //     }
+        //     Polyline(memDC, points, 3);
+        // }
+
+        Point3D rotatedVerts[8];
+        memcpy(rotatedVerts, cube_verts, sizeof(cube_verts));
+        for (int i = 0; i < cube_vert_count; i++) {
+            rotatedVerts[i] = rotateX(cube_verts[i], angle);
             rotatedVerts[i] = rotateY(rotatedVerts[i], angle);
             rotatedVerts[i] = rotateZ(rotatedVerts[i], angle);
         }
 
-        scale(rotatedVerts, 12, 250);
+        scale(rotatedVerts, cube_vert_count, 150 + 25 * cos(0.25 * currentTime));
 
-        POINT points[3];
-        for (int i = 0; i < 20; i++) {
-            for (int j = 0; j < 3; j++) {
-                Point3D v = rotatedVerts[ico_faces[i][j]];
+
+        POINT points[4];
+        for (int i = 0; i < cube_face_count; i++) {
+            for (int j = 0; j < 4; j++) {
+                Point3D v = rotatedVerts[cube_faces[i][j]];
                 points[j].x = WIDTH / 2 + (FOV * v.x) / (v.z + cameraDistance);
-                points[j].y = WIDTH / 2 + (FOV * v.y)  / (v.z + cameraDistance);
+                points[j].y = HEIGHT / 2 + (FOV * v.y) / (v.z + cameraDistance);
             }
-            Polyline(memDC, points, 3);
+            Polyline(memDC, points, 4);
         }
 
-        // Point3D rotatedVerts[8];
-        // memcpy(rotatedVerts, cube_verts, sizeof(cube_verts));
-        // for (int i = 0; i < cube_vert_count; i++) {
-        //     rotatedVerts[i] = rotateX(cube_verts[i], angle);
-        //     rotatedVerts[i] = rotateY(rotatedVerts[i], angle);
-        //     rotatedVerts[i] = rotateZ(rotatedVerts[i], angle);
-        // }
+        for (int i = 0; i < cube_vert_count; i++) {
+            rotatedVerts[i] = rotateX(cube_verts[i], angle);
+            rotatedVerts[i] = rotateY(rotatedVerts[i], angle);
+            rotatedVerts[i] = rotateZ(rotatedVerts[i], angle);
+        }
 
-        // scale(rotatedVerts, cube_vert_count, 150 + 25 * cos(0.25 * currentTime));
+        scale(rotatedVerts, cube_vert_count, 150 - 50 * cos(0.25 * currentTime));
 
-
-        // POINT points[4];
-        // for (int i = 0; i < cube_face_count; i++) {
-        //     for (int j = 0; j < 4; j++) {
-        //         Point3D v = rotatedVerts[cube_faces[i][j]];
-        //         points[j].x = WIDTH / 2 + (FOV * v.x) / (v.z + cameraDistance);
-        //         points[j].y = HEIGHT / 2 + (FOV * v.y) / (v.z + cameraDistance);
-        //     }
-        //     Polyline(memDC, points, 4);
-        // }
-
-        // for (int i = 0; i < cube_vert_count; i++) {
-        //     rotatedVerts[i] = rotateX(cube_verts[i], angle);
-        //     rotatedVerts[i] = rotateY(rotatedVerts[i], angle);
-        //     rotatedVerts[i] = rotateZ(rotatedVerts[i], angle);
-        // }
-
-        // scale(rotatedVerts, cube_vert_count, 150 - 50 * cos(0.25 * currentTime));
-
-        // for (int i = 0; i < cube_face_count; i++) {
-        //     for (int j = 0; j < 4; j++) {
-        //         Point3D v = rotatedVerts[cube_faces[i][j]];
-        //         points[j].x = WIDTH / 2 + (FOV * v.x) / (v.z + cameraDistance);
-        //         points[j].y = HEIGHT / 2 + (FOV * v.y) / (v.z + cameraDistance);
-        //     }
-        //     Polyline(memDC, points, 4);
-        // }
+        for (int i = 0; i < cube_face_count; i++) {
+            for (int j = 0; j < 4; j++) {
+                Point3D v = rotatedVerts[cube_faces[i][j]];
+                points[j].x = WIDTH / 2 + (FOV * v.x) / (v.z + cameraDistance);
+                points[j].y = HEIGHT / 2 + (FOV * v.y) / (v.z + cameraDistance);
+            }
+            Polyline(memDC, points, 4);
+        }
 
         BitBlt(screen, 0, 0, WIDTH, HEIGHT, memDC, 0, 0, SRCCOPY);
 
